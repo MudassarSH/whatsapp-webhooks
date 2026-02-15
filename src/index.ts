@@ -31,8 +31,9 @@ app.post("/webhooks", (req, res) => {
   }
 
   // Delivery status update
-  if (value.statuses) {
-    console.log("Message status update:", value.statuses);
+  if (value?.statuses) {
+    console.log("Message status update:");
+    console.log(JSON.stringify(value.statuses, null, 2));
   }
 });
 
