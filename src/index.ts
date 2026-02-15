@@ -48,6 +48,7 @@ app.post("/webhooks", (req, res) => {
   // Meta metadata (phone_number_id etc.)
   const meta = value.metadata || {};
   const metaSummary = pick(meta, ["display_phone_number", "phone_number_id"]);
+  logJson("FULL VALUE", value);
   logJson("META", metaSummary);
 
   // 1) Incoming user messages (user -> you)
