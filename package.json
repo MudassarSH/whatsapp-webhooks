@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/index.ts",
-    "build": "tsc -b",
+    "build": "tsc -b && mkdir -p dist/lib && cp -R src/lib/generated dist/lib/generated",
     "start": "node ./dist/index.js"
   },
   "keywords": [],

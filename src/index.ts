@@ -204,6 +204,19 @@ app.get("/", (req, res) => {
   res.send("Hello world!")
 })
 
+async function testConnection() {
+  try {
+    await prismaDb.$connect();
+    console.log('✅ Successfully connected to PostgreSQL database');
+  } catch (error) {
+    console.error('❌ Error connecting to database:', error);
+  } finally {
+    await prismaDb.$disconnect();
+  }
+}
+
+
 app.listen(port, () => {
+  testConnection();
   console.log(`Example app listening on port http://localhost:${port}`)
 })
