@@ -62,7 +62,7 @@ app.post("/webhooks", async (req, res) => {
         const waId = m.from;
         const wamId = m.id;
 
-        await prismaDb.contact.upsert({
+        const contactUpdate = await prismaDb.contact.upsert({
           where: {
             waId: waId
           },
@@ -78,7 +78,9 @@ app.post("/webhooks", async (req, res) => {
             lastMessageAt: new Date(Number(m.timeStamp) * 1000)
           }
         });
-        await prismaDb.message.upsert({
+        console.log("Contact Update push is: ", contactUpdate);
+
+        const valueMessageUpdate = await prismaDb.message.upsert({
           where: {
             wamId: wamId
           },
@@ -94,6 +96,7 @@ app.post("/webhooks", async (req, res) => {
             currentStatusAt: new Date()
           }
         })
+        console.log("Value Message Update push is: ", valueMessageUpdate);
         const msgSummary = {
           id: m.id,
           from: m.from,
