@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum MessageType {
+  text
+  image
+  audio
+  document
+  interactive
+  template
+  unknown
+}
+
+enum MessageStatus {
+  sent
+  accepted
+  read
+  delivered
+  deleted
+  failed
+}
+
+model Contact {
+  waId          String    @id
+  profileName   String?
+  phoneNumber   String?
+  lastMessageAt DateTime?
+  lastInboundAt DateTime?
+  messages      Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  wamId            String           @id
+  contactId        String
+  contact          Contact          @relation(fields: [contactId], references: [waId])
+  messageDirection MessageDirection
+  messageType      MessageType      @default(unknown)
+  message          String?
+  timeStampAt      DateTime?
+
+  error MessageError[]
+
+  statusHistory   Status[]
+  currentStatus   MessageStatus?
+  currentStatusAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([contactId, createdAt])
+  @@index([currentStatus, currentStatusAt])
+  @@index([contactId, currentStatus, currentStatusAt])
+}
+
+model Status {
+  id          String        @id @default(uuid())
+  wamId       String
+  message     Message       @relation(fields: [wamId], references: [wamId], onDelete: Cascade)
+  status      MessageStatus
+  timeStamp   DateTime
+  recipientId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([wamId, status, timeStamp])
+  @@index([wamId, timeStamp])
+  @@index([wamId, status])
+  @@index([status, timeStamp])
+}
+
+model MessageError {
+  id               String  @id @default(uuid())
+  messageId        String
+  message          Message @relation(fields: [messageId], references: [wamId], onDelete: Cascade)
+  errorCode        Int     @default(0)
+  ErrorTitle       String?
+  lastErrorDetails String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

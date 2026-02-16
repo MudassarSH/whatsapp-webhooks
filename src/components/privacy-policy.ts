@@ -201,7 +201,7 @@ export const PRIVACY_POLICIES = `<!doctype html>
       </ul>
       <p>
         To exercise these rights, contact us at
-        <a href="mailto:[support@yourdomain.com]">[support@yourdomain.com]</a>.
+        <a href="mailto:[support@mudassar.dev]">[support@mudassar.dev]</a>.
         We may verify your request before responding.
       </p>
     </section>
@@ -266,6 +266,221 @@ export const PRIVACY_POLICIES = `<!doctype html>
   <footer>
     <main>
       © <span id="y"></span> Mudassar. All rights reserved.
+    </main>
+  </footer>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+`
+
+
+export const TERMS_CONDITIONS = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Terms & Conditions - The MH</title>
+  <meta name="robots" content="index,follow" />
+  <style>
+    :root { --max: 920px; --fg:#111; --muted:#555; --bg:#fff; --card:#fafafa; --border:#e7e7e7; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--fg); background:var(--bg); line-height:1.55; }
+    header { padding: 32px 16px 8px; border-bottom:1px solid var(--border); }
+    main { max-width: var(--max); margin: 0 auto; padding: 20px 16px 60px; }
+    h1 { margin:0 0 8px; font-size: 30px; }
+    .meta { color:var(--muted); font-size: 14px; }
+    section { margin-top: 22px; padding: 18px; background: var(--card); border:1px solid var(--border); border-radius: 12px; }
+    h2 { margin:0 0 10px; font-size: 18px; }
+    p, li { font-size: 15px; }
+    ul { margin: 8px 0 0 20px; }
+    a { color: inherit; }
+    .note { font-size: 14px; color: var(--muted); }
+    footer { border-top:1px solid var(--border); padding: 18px 16px; color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+  <header>
+    <main>
+      <h1>Terms & Conditions</h1>
+      <div class="meta">
+        <div><strong>Company Name:</strong> The MH</div>
+        <div><strong>Effective Date:</strong> [YYYY-MM-DD]</div>
+        <div><strong>Last Updated:</strong> [YYYY-MM-DD]</div>
+      </div>
+      <p class="note">
+        These Terms & Conditions ("Terms") govern your access to and use of the services,
+        website, applications, and integrations provided by <strong>The MH</strong> ("Company", "we", "us", "our").
+        By accessing or using our services, you agree to be bound by these Terms.
+      </p>
+    </main>
+  </header>
+
+  <main>
+
+    <section>
+      <h2>1) Acceptance of Terms</h2>
+      <p>
+        By accessing or using our services, you confirm that you have read, understood,
+        and agreed to these Terms. If you do not agree, you must not use the services.
+      </p>
+    </section>
+
+    <section>
+      <h2>2) Description of Services</h2>
+      <p>
+        The MH provides software solutions, automation systems, integrations (including Meta platform integrations
+        such as WhatsApp, Facebook, and Instagram APIs where applicable), and related digital services.
+      </p>
+      <p>
+        We may modify, suspend, or discontinue any part of the services at any time without prior notice.
+      </p>
+    </section>
+
+    <section>
+      <h2>3) User Accounts</h2>
+      <ul>
+        <li>You are responsible for maintaining the confidentiality of your account credentials.</li>
+        <li>You agree to provide accurate and complete information.</li>
+        <li>You are responsible for all activities under your account.</li>
+        <li>We reserve the right to suspend or terminate accounts that violate these Terms.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4) Acceptable Use</h2>
+      <p>You agree NOT to:</p>
+      <ul>
+        <li>Use the services for unlawful, fraudulent, or abusive purposes</li>
+        <li>Transmit spam, malware, or harmful content</li>
+        <li>Attempt unauthorized access to systems or data</li>
+        <li>Reverse engineer, copy, or exploit the software without permission</li>
+        <li>Violate any applicable laws or third-party platform policies (including Meta policies)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>5) Third-Party Integrations (Including Meta)</h2>
+      <p>
+        Our services may integrate with third-party platforms such as Meta (Facebook, Instagram, WhatsApp).
+        Your use of such platforms is also governed by their respective terms and policies.
+      </p>
+      <ul>
+        <li>We are not responsible for changes made by third-party platforms.</li>
+        <li>You must comply with all applicable Meta Platform Policies.</li>
+        <li>We are not liable for disruptions caused by third-party services.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>6) Intellectual Property</h2>
+      <p>
+        All content, software, branding, designs, and materials provided by The MH
+        are owned by or licensed to us and are protected by intellectual property laws.
+      </p>
+      <p>
+        You may not copy, modify, distribute, or create derivative works without written permission.
+      </p>
+    </section>
+
+    <section>
+      <h2>7) Payments & Subscriptions (If Applicable)</h2>
+      <ul>
+        <li>Fees are billed as agreed at the time of purchase.</li>
+        <li>All payments are non-refundable unless stated otherwise.</li>
+        <li>We may change pricing with reasonable notice.</li>
+        <li>Failure to pay may result in suspension of services.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>8) Data & Privacy</h2>
+      <p>
+        Your use of our services is also governed by our Privacy Policy.
+        By using our services, you consent to the collection and use of information as described there.
+      </p>
+    </section>
+
+    <section>
+      <h2>9) Service Availability</h2>
+      <p>
+        We strive to maintain reliable service but do not guarantee uninterrupted availability.
+        We are not liable for downtime, delays, or technical interruptions.
+      </p>
+    </section>
+
+    <section>
+      <h2>10) Disclaimer of Warranties</h2>
+      <p>
+        The services are provided on an "AS IS" and "AS AVAILABLE" basis.
+        We make no warranties, express or implied, including but not limited to
+        merchantability, fitness for a particular purpose, or non-infringement.
+      </p>
+    </section>
+
+    <section>
+      <h2>11) Limitation of Liability</h2>
+      <p>
+        To the maximum extent permitted by law, The MH shall not be liable for
+        indirect, incidental, special, consequential, or punitive damages,
+        including loss of profits, data, or business opportunities.
+      </p>
+      <p>
+        Our total liability shall not exceed the amount paid by you (if any)
+        in the preceding 12 months for the services.
+      </p>
+    </section>
+
+    <section>
+      <h2>12) Indemnification</h2>
+      <p>
+        You agree to indemnify and hold harmless The MH from any claims,
+        damages, liabilities, and expenses arising from your misuse of the services
+        or violation of these Terms.
+      </p>
+    </section>
+
+    <section>
+      <h2>13) Termination</h2>
+      <p>
+        We may suspend or terminate access to our services at any time if you violate these Terms.
+        You may discontinue use at any time.
+      </p>
+    </section>
+
+    <section>
+      <h2>14) Governing Law</h2>
+      <p>
+        These Terms shall be governed by and interpreted in accordance with
+        the laws of [Your Country/State], without regard to conflict of law principles.
+      </p>
+    </section>
+
+    <section>
+      <h2>15) Changes to Terms</h2>
+      <p>
+        We may update these Terms from time to time.
+        Continued use of the services after updates constitutes acceptance of the revised Terms.
+      </p>
+    </section>
+
+    <section>
+      <h2>16) Contact Information</h2>
+      <p>
+        If you have any questions about these Terms, you may contact us at:
+      </p>
+      <p>
+        📧 <a href="mailto:support@mudassar.dev">support@mudassar.dev</a><br />
+        Company: The MH
+      </p>
+    </section>
+
+  </main>
+
+  <footer>
+    <main>
+      © <span id="y"></span> The MH. All rights reserved.
     </main>
   </footer>
 
