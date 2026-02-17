@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { PRIVACY_POLICIES, TERMS_CONDITIONS } from "./components/privacy-policy";
 import { prismaDb } from "./lib/db";
-import { MessageDirection, MessageStatus } from "./lib/generated/prisma";
+import { MessageDirection, MessageStatus, MessageType } from "./lib/generated/prisma";
 dotenv.config();
 const app = express()
 app.use(express.json())
@@ -11,12 +11,13 @@ const token = process.env.WEBHOOK_VERIFY_TOKEN
 
 
 function pick(obj: any, keys: any) {
-  const out = {} as any;
+  const out: any = {};
   for (const k of keys) {
     if (obj?.[k] !== undefined) {
       out[k] = obj[k]
     }
   }
+  return out;
 }
 
 function logJson(label: string, data: any) {
@@ -61,21 +62,22 @@ app.post("/webhooks", async (req, res) => {
       for (const m of value.messages) {
         const waId = m.from;
         const wamId = m.id;
-
+        const ts = Number(m.timestamp);
+        const tsAt = Number.isFinite(ts) ? new Date(ts * 1000) : null;
         const contactUpdate = await prismaDb.contact.upsert({
           where: {
             waId: waId
           },
           update: {
             profileName: value.contacts[0].profile.name,
-            lastInboundAt: new Date(Number(m.timeStamp) * 1000),
-            lastMessageAt: new Date(Number(m.timeStamp) * 1000)
+            lastInboundAt: tsAt,
+            lastMessageAt: tsAt
           },
           create: {
             waId,
             profileName: value.contacts[0].profile.name,
-            lastInboundAt: new Date(Number(m.timeStamp) * 1000),
-            lastMessageAt: new Date(Number(m.timeStamp) * 1000)
+            lastInboundAt: tsAt,
+            lastMessageAt: tsAt
           }
         });
         console.log("Contact Update push is: ", contactUpdate);
@@ -89,9 +91,9 @@ app.post("/webhooks", async (req, res) => {
             wamId,
             contactId: waId,
             messageDirection: MessageDirection.INBOUND,
-            messageType: m.type,
-            message: m.type.body ?? null,
-            timeStampAt: new Date(Number(m.timestamp) * 1000),
+            messageType: (m.type as MessageType) ?? MessageType.unknown,
+            message: m.text.body ?? null,
+            timeStampAt: tsAt,
             currentStatus: MessageStatus.accepted,
             currentStatusAt: new Date()
           }
@@ -123,37 +125,88 @@ app.post("/webhooks", async (req, res) => {
       for (const s of value.statuses) {
         const wamId = s.id;
         const statusEnum = s.status as MessageStatus;
-        const statusTime = new Date(Number(s.timestamp) * 1000);
+        const ts = Number(s.timestamp);
+        const tsAt = Number.isFinite(ts) ? new Date(ts * 1000) : null;
+        const recipientId = s.recipient_id ?? null;
+        const messageUpsert = await prismaDb.message.upsert({
+          where: {
+            wamId
+          },
+          update: {
+            currentStatus: statusEnum,
+            currentStatusAt: tsAt
+          },
+          create: {
+            wamId,
+            contactId: recipientId ?? "unknown",
+            messageDirection: MessageDirection.OUTBOUND,
+            messageType: MessageType.unknown,
+            message: null,
+            timeStampAt: tsAt,
+            currentStatus: statusEnum,
+            currentStatusAt: tsAt
+          }
+        })
+        console.log("FIRST MESSAGE UPSERT IN STATUSES IS: ", messageUpsert);
 
+        if (recipientId) {
+          const contactUpsert = await prismaDb.contact.upsert({
+            where: {
+              waId: recipientId
+            },
+            update: {
+              lastMessageAt: tsAt
+            },
+            create: {
+              waId: recipientId,
+              phoneNumber: recipientId,
+              lastMessageAt: tsAt
+            }
+          })
+          console.log("CONTACT UPSERT AFTER MESSAGE UPSER IN STATUSES IS: ", contactUpsert);
+
+          const messageUpdate = await prismaDb.message.update({
+            where: {
+              wamId
+            },
+            data: {
+              contactId: recipientId
+            }
+          })
+          console.log("MESSAGE Update IN STATUSES IS: ", contactUpsert);
+        }
         const statusDBPUsh = await prismaDb.status.create({
           data: {
             wamId,
             status: statusEnum,
-            timeStamp: statusTime,
-            recipientId: s.recipient_id
+            timeStamp: tsAt!,
+            recipientId: recipientId
           }
-        })
+        }).catch((e) => {
+          // Ignore duplicates due to @@unique (Prisma P2002)
+          if (e?.code !== "P2002") throw e;
+        });
 
         console.log("StatusDB push is: ", statusDBPUsh);
 
-        const statusUpdateMessage = await prismaDb.message.update({
-          where: {
-            wamId
-          },
-          data: {
-            currentStatus: statusEnum,
-            currentStatusAt: statusTime
-          }
-        })
-        console.log("Status Update Message push is: ", statusUpdateMessage);
-        if (statusEnum === MessageStatus.failed && s.errors.length) {
+        // const statusUpdateMessage = await prismaDb.message.update({
+        //   where: {
+        //     wamId
+        //   },
+        //   data: {
+        //     currentStatus: statusEnum,
+        //     currentStatusAt: tsAt
+        //   }
+        // })
+        // console.log("Status Update Message push is: ", statusUpdateMessage);
+        if (statusEnum === MessageStatus.failed && Array.isArray(s.errors) && s.errors.length) {
           const err = s.errors[0];
 
           await prismaDb.messageError.create({
             data: {
               messageId: wamId,
-              errorCode: err.code,
-              ErrorTitle: err.title,
+              errorCode: err.code ?? 0,
+              ErrorTitle: err.title ?? null,
               lastErrorDetails: err.error_deta.details ?? err.message ?? null
             }
           })
@@ -210,8 +263,6 @@ async function testConnection() {
     console.log('✅ Successfully connected to PostgreSQL database');
   } catch (error) {
     console.error('❌ Error connecting to database:', error);
-  } finally {
-    await prismaDb.$disconnect();
   }
 }
 
